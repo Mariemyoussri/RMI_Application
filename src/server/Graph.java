@@ -73,6 +73,45 @@ public class Graph implements GraphInterface {
         return dist.get(dest);
     }
 
+    private int djikstraQuery(int src,int dest){
+                int n = graph.size();
+                if (!graph.containsKey(src) || !graph.containsKey(dest)) return -1;
+                if (src == dest) return 0;
+
+                HashSet<Integer> visited = new HashSet<>();
+                HashMap<Integer, Integer> dist = new HashMap<>();
+
+                // initializing distances array between src and the node
+                for (int i : graph.keySet()) {
+                    dist.put(i, Integer.MAX_VALUE);
+                }
+                dist.put(src, 0);
+
+                for (int i = 0; i < n - 1; i++) {
+                    // Find the vertex with the minimum distance from the source among the unvisited vertices
+                    int minVertex = -1;
+                    for (int j : dist.keySet()) {
+                        if (!visited.contains(j) && (minVertex == -1 || dist.get(j) < dist.get(minVertex))) {
+                            minVertex = j;
+                        }
+                    }
+                    // Mark the minimum distance vertex as visited
+                    visited.add(minVertex);
+                    // Update the distances of the adjacent vertices of the minimum distance vertex
+                    HashSet<Integer> adjacentVertices = graph.get(minVertex);
+
+                    for (int adjacentVertex : adjacentVertices) {
+                        if (!visited.contains(adjacentVertex)) {
+                            int newDistance = dist.get(minVertex) + 1; // Assuming unweighted graph
+                            if (newDistance < dist.get(adjacentVertex)) {
+                                dist.put(adjacentVertex,newDistance);
+                            }
+                        }
+                    }
+                }
+                return dist.get(dest);
+    }
+
     @Override
     public synchronized String computeBatch(String batch) throws RemoteException{
         String ans = "";
