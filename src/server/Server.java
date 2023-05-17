@@ -1,15 +1,29 @@
 package server;
 
 import interfaces.GraphInterface;
+
+import java.io.File;
+import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 public class Server extends Thread {
+    private boolean useBFS;
+
+    public Server(boolean useBFS){
+        this.useBFS = useBFS;
+        File serverLog = new File("Server_Log.txt");
+        try {
+            serverLog.createNewFile();
+        } catch (IOException e) {
+            System.out.println("An error occurred while creating the file: " + e.getMessage());
+        }
+    }
 
     public void run(){
         try {
-            Graph graph = new Graph("/home/ubuntu/graph.txt");
+            Graph graph = new Graph("graph.txt", useBFS);
 
             // Exporting the object of implementation class
             // (here we are exporting the remote object to the stub)

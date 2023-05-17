@@ -5,5 +5,5 @@ import java.rmi.RemoteException;
 
 public interface GraphInterface extends Remote {
 
-    public  String computeBatch(String batch) throws RemoteException;
+    public  String computeBatch(int clientID, String batch) throws RemoteException;
 }

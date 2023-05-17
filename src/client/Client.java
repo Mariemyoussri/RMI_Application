@@ -10,17 +10,24 @@ import java.util.Random;
 import logger.Logger;
 
 public class Client extends Thread {
-    private final int BATCH_SIZE = 4;
-    private final int READ_PERCENTAGE = 50;
-    private final int WRITE_PERCENTAGE = 50;
-    private final int ADD_PERCENTAGE = 50;
-    private final int NUMBER_OF_VERTICES = 50;
+    private int BATCH_SIZE = 4;
+    private int READ_PERCENTAGE = 50;
+    private int WRITE_PERCENTAGE = 50;
+    private int ADD_PERCENTAGE = 50;
+    private int NUMBER_OF_VERTICES = 50;
+    private boolean isBFS;
 
     private int id;
     private int batchesCount = 0;
 
-    public Client(int id){
+
+    public Client(int id, int batchSize, int read_percentage, int writePercentage, int addPercentage, int numOfVertices){
         this.id = id;
+        this.BATCH_SIZE = batchSize;
+        this.READ_PERCENTAGE = read_percentage;
+        this.WRITE_PERCENTAGE = writePercentage;
+        this.ADD_PERCENTAGE = addPercentage;
+        this.NUMBER_OF_VERTICES = numOfVertices;
         createFolders();
     }
 
@@ -31,7 +38,7 @@ public class Client extends Thread {
             try {
                 String batch = generateRandomBatch();
                 long start = System.currentTimeMillis();
-                String response = graph.computeBatch(batch);
+                String response = graph.computeBatch(id, batch);
                 long end = System.currentTimeMillis();
                 long responseTime = end - start;
 
@@ -132,5 +139,14 @@ public class Client extends Thread {
         String responseTimeLog = "Response time of batch_" + batchesCount + "  =  " + responseTime + "\n";
         Logger.writeToFile("Client "+ id + "/Response_times.txt", responseTimeLog);
         batchesCount++;
+    }
+
+    private void printInConsole(String batch, String response, long responseTime){
+        System.out.println("=========================================================================");
+        System.out.println("Client_" + id + " -> Batch_" + batchesCount + " :");
+        System.out.println("Response time = " + responseTime);
+        System.out.println("Batch: \n" + batch);
+        System.out.println("Response: \n" + response);
+        System.out.println("=========================================================================");
     }
 }
